@@ -1,0 +1,132 @@
+{% extends "account_administrator/base.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>
+        Vị trí bình chọn
+    </h1>
+    <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Positions</li>
+    </ol> -->
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <a href="#addnew" data-toggle="modal" class="btn btn-success btn-sm btn-flat"><i
+                            class="fa fa-plus"></i> Thêm mới</a>
+                </div>
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-hover table-striped">
+                        <thead style="background-color: #222D32; color:white;">
+                            <th>Tên vị trí</th>
+                            <th>Số phiếu đã bầu</th>
+                            <th>Hoạt động</th>
+                        </thead>
+                        <tbody>
+                            {% for i in List_Position %}
+                            <tr>
+                                <td>{{i.name}}</td>
+                                <td>{{ i.positionss.count }}</td>
+                                <td>
+                                    <a class='btn btn-primary btn-sm  btn-flat edit_positions' data-id='{{ i.id }}'
+                                        data-name='{{ i.name }}'><i class='fa fa-edit'></i> Cập nhật</a>
+                                    <a href="{% url 'admin_delete_positions' i.id %}"
+                                        class='btn btn-primary btn-sm  btn-flat'><i class='fa fa-trash'></i>
+                                        Xóa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Bang position create -->
+<div class="modal fade" id="addnew">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Thêm mới vị trí bình chọn</b></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" enctype="multipart/form-data" method="POST"
+                    action="{% url 'admin_create_positions' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_fullname">Tên vị trí:</label>
+                            <input type="text" name="name" maxlength="50" class="form-control" required
+                                id="id_fullname">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i
+                                class="fa fa-close"></i> Đóng </button>
+                        <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i>
+                            Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<!-- Edit -->
+<div class="modal fade editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Cập nhật vị trí</b></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" enctype="multipart/form-data" method="POST"
+                    action="{% url 'admin_update_positions' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group has-feedback" style="display:none;">
+                            <span class="text-danger"></span>
+                            <label for="id_fullname">ID:</label>
+                            <input type="text" id="editId" name="Editid" maxlength="50" class="form-control" required>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_fullname">Tên vị trí:</label>
+                            <input type="text" id="editName" name="Editname" maxlength="50" class="form-control"
+                                required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i
+                                class="fa fa-close"></i> Đóng </button>
+                        <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i>
+                            Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(function () {
+        $(document).on('click', '.edit_positions', function (e) {
+            e.preventDefault();
+            $('.editModal').modal('show');
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            $('#editName').val(name);
+            $('#editId').val(id);
+        });
+    });
+</script>
+{% endblock content %}

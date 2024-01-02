@@ -1,0 +1,194 @@
+{% extends "account_administrator/base.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>
+        Ứng viên bình chọn
+    </h1>
+    <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Candidates</li>
+    </ol> -->
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <a data-toggle="modal" class="btn btn-success btn-sm btn-flat create_candidate"><i
+                            class="fa fa-plus"></i>Thêm mới</a>
+                </div>
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-hover table-striped">
+                        <thead style="background-color: #222D32; color:white;">
+                            <th>Tên đầy đủ</th>
+                            <th>VỊ trí ứng cử</th>
+                            <th>Mô tả</th>
+                            <th>Ảnh đại diện</th>
+                            <th>Hoạt động</th>
+                        </thead>
+                        <tbody>
+                            {% for i in List_Candidate %}
+                            <tr>
+                                <td>{{i.fullname}}</td>
+                                <td style="display: flex; flex-direction: column;">
+                                    <ul>
+                                        {% for j in i.positions.all %}
+                                        <li>{{j.name}}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{i.bio}}</td>
+                                <td><img src="{{Domain}}/{{i.photo}}" width="80" height="80" alt="{{i.fullname}}"
+                                        class="img img-fluid"></td>
+                                <td>
+                                    <button class='btn btn-primary btn-sm edit btn-flat update_candidate'
+                                        data-id='{{ i.id }}' data-fullname='{{ i.fullname}}' data-bio='{{ i.bio }}'
+                                        data-positions='[{% for position in i.positions.all %}"{{ position.id }}"{% if not forloop.last %},{% endif %}{% endfor %}]'><i
+                                            class='fa fa-edit'></i> Cập
+                                        nhật</button>
+                                    <a href="{% url 'admin_delete_candidate' i.id %}"
+                                        class='btn btn-primary btn-sm  btn-flat'><i class='fa fa-trash'></i> Xóa</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Bang position create -->
+<div class="modal fade create_C">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Thêm mới Ứng viên</b></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" enctype="multipart/form-data" method="POST"
+                    action="{% url 'admin_create_candidate' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_fullname">Tên đầy đủ:</label>
+                            <input type="text" name="fullname" maxlength="50" class="form-control" required
+                                id="id_fullname">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_bio">Mô tả:</label>
+                            <textarea name="bio" cols="40" rows="10" class="form-control" required
+                                id="id_bio"></textarea>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_position">Vị trí:</label>
+                            <select name="position" class="form-control" required id="id_position" multiple>
+                                {% for i in List_Position %}
+                                <option value="{{i.id}}">{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_photo">Ảnh đại diện:</label>
+                            <input type="file" name="photo" accept="image/*" class="form-control" required
+                                id="id_photo">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i
+                                class="fa fa-close"></i> Đóng </button>
+                        <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i>
+                            Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<!-- Edit -->
+<div class="modal fade update_C">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><b>Cập nhật ứng viên:</b></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" enctype="multipart/form-data" method="POST"
+                    action="{% url 'admin_update_candidate' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group has-feedback" style="display: none;">
+                            <span class="text-danger"></span>
+                            <label for="id_id">ID:</label>
+                            <input type="text" name="Editid" maxlength="50" class="form-control" required id="id_id">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_fullname">Họ tên ứng viên:</label>
+                            <input type="text" name="fullname" maxlength="50" class="form-control" required
+                                id="id_fullname_C">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_bio">Mô tả:</label>
+                            <textarea name="bio" cols="40" rows="10" class="form-control" required
+                                id="id_bio_C"></textarea>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_position">Vị trí:</label>
+                            <select name="position" class="form-control" required id="id_positions_C" multiple>
+                                {% for i in List_Position %}
+                                <option value="{{i.id}}" selected>{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group has-feedback">
+                            <span class="text-danger"></span>
+                            <label for="id_photo">Hình ảnh:</label>
+                            <input type="file" name="photo" accept="image/*" class="form-control" id="id_photo_C">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i
+                                class="fa fa-close"></i> Đóng </button>
+                        <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i>
+                            Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(function () {
+        $(document).on('click', '.create_candidate', function (e) {
+            e.preventDefault();
+            $('.create_C').modal('show');
+        });
+        $(document).on('click', '.update_candidate', function (e) {
+            e.preventDefault();
+            $('.update_C').modal('show');
+            var id = $(this).data('id');
+            var fullname = $(this).data('fullname');
+            var bio = $(this).data('bio');
+            var position = $(this).data('positions');
+            $('#id_fullname_C').val(fullname);
+            $('#id_bio_C').val(bio);
+            $('#id_positions_C').val(position);
+            $('#id_id').val(id);
+        });
+    });
+</script>
+{% endblock content %}

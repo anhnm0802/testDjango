@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Đăng kí tài khoản</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+    <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="/static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/bower_components/font-awesome/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/toastr/toastr.min.css ">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+  	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  	<![endif]-->
+    <!-- Google Font -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <style>
+        .mt20 {
+            margin-top: 20px;
+        }
+
+        .title {
+            font-size: 50px;
+        }
+
+        #candidate_list {
+            margin-top: 20px;
+        }
+
+        #candidate_list ul {
+            list-style-type: none;
+        }
+
+        #candidate_list ul li {
+            margin: 0 30px 30px 0;
+            vertical-align: top
+        }
+
+        .clist {
+            margin-left: 20px;
+        }
+
+        .cname {
+            font-size: 25px;
+        }
+
+        .votelist {
+            font-size: 17px;
+        }
+    </style>
+</head>
+
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Xác thực Email</b>
+        </div>
+        <div class="login-box-body">
+            <!-- <p class="login-box-msg">Register an account</p> -->
+            <form id="otpForm" method="POST" action="{% url 'Accuracy_otp' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group has-feedback">
+                        <span class="text-danger"></span>
+                        <label for="id_email">Email:</label>
+                        <input type="email" name="email" value="{{email}}" class="form-control" maxlength="100" required
+                            id="id_password">
+                    </div>
+                    <div class="form-group has-feedback">
+                        <span class="text-danger"></span>
+                        <label for="id_otp">Mã xác thực:</label>
+                        <input type="text" name="otp" class="form-control" maxlength="6" required id="id_password">
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat" name="login"><i
+                                    class="glyphicon glyphicon-wrench"></i> Xác thực</button>
+                        </div>
+                        <div class="pull-right col-xs-7">
+                            <button type="button" class="btn btn-success btn-block btn-flat" id="resendButton"
+                                onclick="setAction('{% url 'resend_code' %}')"><i class="fa fa-sign-in"></i> Gửi lại mã
+                                xác thực</button>
+                        </div>
+                    </div>
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="alert alert-danger" style="margin-top: 20px;">
+                        <strong>{{ message.message }}</strong>
+                    </div>
+                    {% elif message.tags == 'success' %}
+                    <div class="alert alert-success" style="margin-top: 20px;">
+                        <strong>{{ message.message }}</strong>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- </div> -->
+    <!-- Modal -->
+    <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/account/register/" method="POST">
+                    <input type="hidden" name="csrfmiddlewaretoken"
+                        value="GADFBLpltIWbqvNJMYDtduqD1yVoXdWVe7brLkCJzrXMyjFvHsWoZdRg1g1agORT">
+                    <div class="modal-header">
+                        <p class="modal-title" id="register">Create New Account <span class="float-right">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </span></p>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group has-feedback">
+                            <label for="id_last_name">Last name:</label>
+                            <input type="text" name="last_name" maxlength="150" class="form-control" required
+                                id="id_last_name">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="id_first_name">First name:</label>
+                            <input type="text" name="first_name" maxlength="150" class="form-control" required
+                                id="id_first_name">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="id_email">Email:</label>
+                            <input type="email" name="email" maxlength="320" class="form-control" required
+                                id="id_email">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="id_password">Password:</label>
+                            <input type="password" name="password" class="form-control" required id="id_password">
+                        </div>
+                        <div class="form-group has-feedback">
+                            <label for="id_phone">Phone:</label>
+                            <input type="text" name="phone" maxlength="11" class="form-control" required id="id_phone">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="none" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" name="reg"
+                            onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications.')"
+                            class="btn btn-success">Save</button>
+                    </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <!-- jQuery 3 -->
+    <script src="/static/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+    <script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="/static/plugins/iCheck/icheck.min.js"></script>
+    <!-- DataTables -->
+    <script src="/static/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="/static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="/static/bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="/static/dist/js/adminlte.min.js"></script>
+    <!-- Data Table Initialize -->
+    <script src="/static/toastr/toastr.min.js"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable()
+            var bookTable = $('#booklist').DataTable({
+                'paging': true,
+                'lengthChange': false,
+                'searching': true,
+                'ordering': true,
+                'info': false,
+                'autoWidth': false
+            })
+            $('#searchBox').on('keyup', function () {
+                bookTable.search(this.value).draw();
+            });
+        })
+    </script>
+    <script>
+        function setAction(url) {
+            document.getElementById('otpForm').action = url;
+            document.getElementById('otpForm').submit();
+        }
+    </script>
+</body>
+
+</html>

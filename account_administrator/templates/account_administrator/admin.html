@@ -1,0 +1,121 @@
+{% extends "account_administrator/base.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>
+        Bảng điều khiển
+    </h1>
+    <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol> -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{Number_Position.count}}</h3>
+                    <p>Số vị trí bình chọn</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-tasks"></i>
+                </div>
+                <a href="/administrator/positions/" class="small-box-footer">Thêm thông tin <i
+                        class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{Number_Candidate.count}}</h3>
+                    <p>Số ứng viên bình chọn</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-black-tie"></i>
+                </div>
+                <a href="/administrator/candidate/" class="small-box-footer">Thêm thông tin <i
+                        class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h3>{{Number_Account.count}}</h3>
+                    <p>Số người bỏ phiếu</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+                <a href="/administrator/voters/" class="small-box-footer">Thêm thông tin <i
+                        class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-maroon">
+                <div class="inner">
+                    <h3>{{Number_Votes.count}}</h3>
+                    <p>Số phiếu bầu</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-edit"></i>
+                </div>
+                <a href="/administrator/votes/" class="small-box-footer">Thêm thông tin <i
+                        class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
+    {% for chart in chart_data %}
+    <canvas id="{{ chart.name_char }}" width="200" height="70"></canvas>
+    {% endfor %}
+</section>
+<script>
+    {% for chart in chart_data %}
+    var ctx = document.getElementById('{{ chart.name_char }}').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart.labels | safe }},
+    datasets: [{
+        label: 'Số phiếu bầu',
+        data: {{ chart.values | safe }},
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+                }]
+            },
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                    text: '{{ chart.name_char }}',
+                        fontSize: 25
+            }
+        },
+        // scales: {
+        //     y: {
+        //         beginAtZero: true
+        //     }
+        // },
+        indexAxis: 'y',  // Chuyển đổi sang trục y để áp dụng barPercentage và categoryPercentage
+            barThickness: 30,
+                barPercentage: 0.5,  // Điều chỉnh kích thước của cột (0.5 là 50%)
+                    categoryPercentage: 0.9  // Điều chỉnh khoảng cách giữa các cột (0.8 là 80%)
+        // // barThickness: 3,  // Điều chỉnh kích thước của cột
+        // //     maxBarThickness: 3,  // Điều chỉnh kích thước tối đa của cột
+        // barPercentage: 0.7,  // Điều chỉnh kích thước của cột (0.7 là 70%)
+        //     categoryPercentage: 0.7  // Điều chỉnh khoảng cách giữa các cột (0.7 là 70%)
+    }
+        });
+    {% endfor %}
+</script>
+{% endblock content %}

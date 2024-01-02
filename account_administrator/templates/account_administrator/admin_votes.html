@@ -1,0 +1,42 @@
+{% extends "account_administrator/base.html" %}
+{% block content %}
+<section class="content-header">
+    <h1>
+        Phiếu bầu
+    </h1>
+    <!-- <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Votes</li>
+    </ol> -->
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <!-- <div class="box-header with-border">
+                    <a href="#reset" data-toggle="modal" class="btn btn-danger btn-sm btn-flat"><i
+                            class="fa fa-refresh"></i> Reset</a>
+                </div> -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-hover table-striped">
+                        <thead style="background-color: #222D32; color:white;">
+                            <th>Người bỏ phiếu</th>
+                            <th>Ứng viên</th>
+                            <th>Vị trí</th>
+                        </thead>
+                        <tbody>
+                            {% for i in List_Votes %}
+                            <tr>
+                                <td>{{ i.voter.first_name }} {{ i.voter.last_name }}</td>
+                                <td>{{i.candidate}}</td>
+                                <td>{{i.position}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
